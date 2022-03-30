@@ -1,0 +1,16 @@
+{
+    "name": "todos-server",
+    "version": "1.0.0",
+    "description": "Servidor de quehaceres (ToDo(s))",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+    },
+    "keywords": [],
+    "author": "Instructor Coding Dojo",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.3"
+    }
+}
