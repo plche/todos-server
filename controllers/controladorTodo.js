@@ -17,10 +17,10 @@ const insertarTodo = (request, response) => {
                     const nuevoTodo = {nombre, status, id};
                     Todo.create(nuevoTodo)
                         .then(insertadoTodo => {
-                            Usuario.findOneAndUpdate({nombreUsuario}, {$push: {todos: nuevoTodo}})
+                            Usuario.findOneAndUpdate({nombreUsuario}, {$push: {todos: insertadoTodo._id}})
                                 .then(() => response.status(201).json(insertadoTodo))
                                 .catch(err => {
-                                    response.statusMessage = `Hubo un error al ejecutar la actualización: ${err}`;
+                                    response.statusMessage = `Hubo un error al ejecutar el insert: ${err}`;
                                     return response.status(400).end();
                                 });
                         })
