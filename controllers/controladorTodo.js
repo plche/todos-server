@@ -1,15 +1,35 @@
-const Todo = require('./../models/modeloTodo');
+const {Todo} = require('./../models/modeloTodo');
+const Usuario = require('./../models/modeloUsuario');
 
 const insertarTodo = (request, response) => {
-    const {nombre, id, status} = request.body;
+    const {nombre, id, status, nombreUsuario} = request.body;
 
-    if (!nombre || !id || !status) {
-        response.statusMessage = "Para crear un nuevo ToDo es necesario enviar 'nombre', 'status' y 'id'.";
+    if (!nombre || !id || !status || !nombreUsuario) {
+        response.statusMessage = "Para crear un nuevo ToDo es necesario enviar 'nombre', 'status', 'id' y 'nombreUsuario'.";
         return response.status(406).end();
     } else {
-        const nuevoTodo = {nombre, status, id};
-        Todo.create(nuevoTodo)
-            .then(insertadoTodo => response.status(201).json(insertadoTodo))
+        Usuario.find({nombreUsuario})
+            .then(usuarioEncontrado => {
+                if (usuarioEncontrado.length === 0) {
+                    response.statusMessage = `Usuario con 'nombreUsuario': ${nombreUsuario} no encontrado.`;
+                    return response.status(404).end();
+                } else {
+                    const nuevoTodo = {nombre, status, id};
+                    Todo.create(nuevoTodo)
+                        .then(insertadoTodo => {
+                            Usuario.findOneAndUpdate({nombreUsuario}, {$push: {todos: nuevoTodo}})
+                                .then(() => response.status(201).json(insertadoTodo))
+                                .catch(err => {
+                                    response.statusMessage = `Hubo un error al ejecutar la actualización: ${err}`;
+                                    return response.status(400).end();
+                                });
+                        })
+                        .catch(err => {
+                            response.statusMessage = `Hubo un error al ejecutar el insert: ${err}`;
+                            return response.status(400).end();
+                        });
+                }
+            })
             .catch(err => {
                 response.statusMessage = `Hubo un error al ejecutar el insert: ${err}`;
                 return response.status(400).end();

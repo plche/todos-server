@@ -1,12 +1,14 @@
 const express = require('express');
 require('./config/config');
 const app = express();
-const TodoRouter = require("./routes/rutaTodo");
+const TodoRouter = require('./routes/rutaTodo');
+const UsuarioRouter = require('./routes/rutaUsuario');
 
 const puerto = 8080;
 
 app.use(express.json());
 app.use('/api/todo', TodoRouter);
+app.use('/api/usuario', UsuarioRouter);
 
 /*
 app.get('/api/todo/buscar', (request, response) => {
